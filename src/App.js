@@ -1,8 +1,8 @@
-import TodoListForm from "./pages/TodoListForm";
 import "./App.css";
+import Router from "./Router";
 
 function App() {
-  return <TodoListForm />;
+  return <Router />;
 }
 
 export default App;

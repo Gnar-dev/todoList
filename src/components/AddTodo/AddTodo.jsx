@@ -1,50 +1,98 @@
 import React, { useState } from "react";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import "./AddTodo.scss";
+import { add } from "../../redux/modules/toDoData";
 
 const AddTodo = ({ onAdd }) => {
-  const [title, setTitle] = useState("");
-  const [detail, setDetail] = useState("");
+  const id = uuidv4();
+  const dispatch = useDispatch();
+  const [todo, setTodo] = useState({
+    id: 0,
+    title: "",
+    detail: "",
+    status: false,
+  });
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setTodo({ ...todo, [name]: value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title.trim().length === 0 || detail.trim().length === 0) {
+    if (todo.title.trim().length === 0 || todo.detail.trim().length === 0)
       return;
-    }
-    onAdd({ id: uuidv4(), title, detail, status: false });
-    setTitle("");
-    setDetail("");
+    dispatch(add({ ...todo, id }));
+
+    setTodo({
+      id: uuidv4(),
+      title: "",
+      detail: "",
+      status: false,
+    });
   };
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label className="title">제목 : </label>
-        <input
+      <Form onSubmit={handleSubmit}>
+        <Title>제목 : </Title>
+        <Input
           className="inputTitle"
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          name="title"
+          value={todo.title}
+          onChange={onChangeHandler}
         />
-        <label className="detail">내용 : </label>
-        <input
+        <Title>내용 : </Title>
+        <Input
           className="inputDetail"
           type="text"
-          value={detail}
-          onChange={(e) => setDetail(e.target.value)}
+          name="detail"
+          value={todo.detail}
+          onChange={onChangeHandler}
         />
-        <button
+        <AddBtn
           className="inputBtn"
           onClick={(e) => {
-            if (title === "" || detail === "") {
+            if (todo.title === "" || todo.detail === "") {
               e.preventDefault();
               alert("빈칸 없이 입력해주세요");
             }
           }}
         >
           추가하기
-        </button>
-      </form>
+        </AddBtn>
+      </Form>
     </>
   );
 };
+const Form = styled.form`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Title = styled.label`
+  font-size: 20px;
+  font-weight: 600;
+`;
+const Input = styled.input`
+  margin: 0 50px 0 10px;
+  width: 13vw;
+  height: 20px;
+  border: none;
+  border-bottom: 2px solid black;
+  outline: none;
+`;
 
+const AddBtn = styled.button`
+  padding: 10px;
+  border: 2px solid black;
+  background-color: transparent;
+  font-size: 16px;
+  font-family: "Jua", sans-serif;
+  cursor: pointer;
+  :hover {
+    color: white;
+    background-color: black;
+  }
+`;
 export default AddTodo;

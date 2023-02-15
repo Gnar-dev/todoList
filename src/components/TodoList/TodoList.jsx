@@ -1,88 +1,67 @@
-import React, { useState } from "react";
 import AddTodo from "../AddTodo/AddTodo";
 import TodoCard from "../TodoCard/TodoCard";
-import "./TodoList.scss";
-
+import { useSelector } from "react-redux";
+import styled from "styled-components";
 const TodoList = () => {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      title: "리액트 공부하기",
-      detail: "리액트 기초를 공부해봅시다.",
-      status: false,
-    },
-    {
-      id: 2,
-      title: "리액트 공부하기",
-      detail: "리액트 기초를 공부해봅시다.",
-      status: true,
-    },
-  ]);
-  const handleAdd = (todo) => {
-    setTodos([...todos, todo]);
-  };
-  const handleUpdate = (updated) => {
-    setTodos(todos.map((e) => (e.id === updated.id ? updated : e)));
-  };
-  const handleDelete = (deleted) => {
-    setTodos(todos.filter((e) => e.id !== deleted.id));
-  };
+  const todos = useSelector((state) => state.toDoData.todos);
+
   return (
-    <section className="innerContainer">
-      <AddTodo onAdd={handleAdd} />
-      <div className="workingTodoInner">
-        <h2>Working.. 🔥</h2>
-        <ul className="lists">
-          {todos.map((todo) => {
-            if (!todo.status) {
-              return (
-                <TodoCard
-                  key={todo.id}
-                  todo={todo}
-                  onUpdate={handleUpdate}
-                  onDelete={handleDelete}
-                />
-              );
-            } else {
-              return null;
-            }
-          })}
-        </ul>
-      </div>
-      <div className="doneTodoInner">
-        <h2>Done..! 🎉</h2>
-        <ul className="lists">
-          {todos.map((todo) => {
-            if (todo.status) {
-              return (
-                <TodoCard
-                  key={todo.id}
-                  todo={todo}
-                  onUpdate={handleUpdate}
-                  onDelete={handleDelete}
-                />
-              );
-            } else {
-              return null;
-            }
-          })}
-        </ul>
-      </div>
-      <div className="allTodoInner">
-        <h2>All to Do 💧</h2>
-        <ul className="lists">
-          {todos.map((todo) => (
-            <TodoCard
-              key={todo.id}
-              todo={todo}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-            />
-          ))}
-        </ul>
-      </div>
-    </section>
+    <Container>
+      <AddTodo />
+      <Inner>
+        <Working>
+          <h2>Working 🔥</h2>
+          <Lists>
+            {todos?.map((todo) => {
+              if (!todo.status) {
+                return <TodoCard key={todo.id} todo={todo} />;
+              }
+            })}
+          </Lists>
+        </Working>
+        <Done>
+          <h2>Done 🎉</h2>
+          <Lists>
+            {todos?.map((todo) => {
+              if (todo.status) {
+                return <TodoCard key={todo.id} todo={todo} />;
+              }
+            })}
+          </Lists>
+        </Done>
+      </Inner>
+    </Container>
   );
 };
 
+const Container = styled.section`
+  padding: 3%;
+`;
+const Lists = styled.ul`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 0;
+`;
+const Inner = styled.div`
+  display: flex;
+`;
+const Working = styled.div`
+  margin: 0 auto;
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`;
+const Done = styled.div`
+  margin: 0 auto;
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`;
 export default TodoList;
